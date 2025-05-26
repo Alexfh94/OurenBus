@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Fondo redondeado -->
+    <path
+        android:fillColor="@color/ourenbus_turquoise"
+        android:pathData="M50,0L250,0A50,50 0,0 1,300 50L300,250A50,50 0,0 1,250 300L50,300A50,50 0,0 1,0 250L0,50A50,50 0,0 1,50 0z"/>
+    
+    <!-- Icono del autobús -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M150,80C130,80 115,88 115,104v60c0,7.5 5,12 12,12h12v-12h38v12h12c7.5,0 12,-4.5 12,-12V104c0,-16 -20,-24 -51,-24zM122.5,147c-5.5,0 -10,-4.5 -10,-10s4.5,-10 10,-10 10,4.5 10,10 -4.5,10 -10,10zM177.5,147c-5.5,0 -10,-4.5 -10,-10s4.5,-10 10,-10 10,4.5 10,10 -4.5,10 -10,10z"/>
+    
+    <!-- Texto "OurenBus" -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M67,230c-14,0 -24,-10 -24,-24s10,-24 24,-24c14,0 24,10 24,24S81,230 67,230zM67,194c-7,0 -12,5 -12,12s5,12 12,12 12,-5 12,-12 -5,-12 -12,-12z"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M100,230v-48h12v36h20v12z"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M140,230v-48h10v20h10v-20h10v48h-10v-16h-10v16z"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M180,230c-12,0 -21,-10 -21,-24s9,-24 21,-24c12,0 21,10 21,24S192,230 180,230zM180,194c-6,0 -10,5 -10,12s4,12 10,12 10,-5 10,-12 -4,-12 -10,-12z"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M211,230v-48h10v20h10v-20h10v48h-10v-16h-10v16z"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M251,230v-36h-10v-12h32v12h-12v36z"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M280,230v-48h12v48z"/>
+</vector> 

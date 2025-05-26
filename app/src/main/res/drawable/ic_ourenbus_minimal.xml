@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Fondo cuadrado redondeado -->
+    <path
+        android:fillColor="@color/primary_dark"
+        android:pathData="M24,24L84,24A10,10 0,0 1,94 34L94,74A10,10 0,0 1,84 84L24,84A10,10 0,0 1,14 74L14,34A10,10 0,0 1,24 24z" />
+
+    <!-- Icono del autobús minimalista -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,34C45,34 38,37 38,45v20c0,3 1.5,4 4,4h4v-4h16v4h4c2.5,0 4,-1 4,-4V45c0,-8 -9,-11 -16,-11zM42,55c-2.2,0 -4,-1.8 -4,-4s1.8,-4 4,-4s4,1.8 4,4S44.2,55 42,55zM66,55c-2.2,0 -4,-1.8 -4,-4s1.8,-4 4,-4s4,1.8 4,4S68.2,55 66,55z" />
+
+    <!-- Texto "OurenBus" minimalista elegante -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M30,74h4l3,9h-4L30,74zM38,74h4v9h-4V74zM47,74h3l4,9h-4L47,74zM59,74h4v9h-4V74zM68,74h3l4,9h-4L68,74zM78,74h-3v2h2v5h-2v2h6v-2h-3V74z" />
+</vector> 

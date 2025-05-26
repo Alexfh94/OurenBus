@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="@string/settings_notifications">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="notifications_enabled"
+            android:summary="@string/notifications_enabled"
+            android:title="@string/notifications_enabled" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_theme">
+        <ListPreference
+            android:defaultValue="system"
+            android:entries="@array/theme_entries"
+            android:entryValues="@array/theme_values"
+            android:key="theme"
+            android:title="@string/theme" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_location">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="location_always"
+            android:summary="@string/location_when_using"
+            android:title="@string/location_always_enabled" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_about">
+        <Preference
+            android:key="app_info"
+            android:title="@string/app_name" />
+        
+        <Preference
+            android:key="clear_data"
+            android:title="Borrar datos de la aplicación" />
+    </PreferenceCategory>
+
+</PreferenceScreen> 

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Colores base -->
+    <color name="primary">#1976D2</color>
+    <color name="primary_dark">#1565C0</color>
+    <color name="primary_light">#64B5F6</color>
+    <color name="accent">#FF5722</color>
+    
+    <!-- Colores neutros -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="grey">#757575</color>
+    <color name="light_grey">#EEEEEE</color>
+    <color name="error">#F44336</color>
+    <color name="success">#4CAF50</color>
+    
+    <!-- Colores de rutas de bus -->
+    <color name="route_walk">#757575</color>
+    <color name="route_bus_1">#FF5722</color>
+    <color name="route_bus_2">#4CAF50</color>
+    <color name="route_bus_3">#2196F3</color>
+    <color name="route_bus_4">#9C27B0</color>
+    <color name="route_bus_5">#FFC107</color>
+    
+    <!-- Colores para estados y feedback -->
+    <color name="warning">#FFC107</color>
+    <color name="info">#2196F3</color>
+    
+    <!-- Colores para el tema oscuro -->
+    <color name="dark_background">#121212</color>
+    <color name="dark_surface">#1E1E1E</color>
+    <color name="dark_card_background">#2D2D2D</color>
+
+    <!-- Colores OurenBus -->
+    <color name="ourenbus_turquoise">#2A8B8B</color>
+    <color name="ourenbus_blue">#1E88E5</color>
+    <color name="ourenbus_yellow">#FFC107</color>
+    <color name="ourenbus_dark_blue">#0D47A1</color>
+</resources>

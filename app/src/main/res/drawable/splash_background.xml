@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Fondo color azul oscuro -->
+    <item android:drawable="@color/primary_dark" />
+    
+    <!-- Icono completo centrado -->
+    <item
+        android:drawable="@drawable/ic_ourenbus_minimal"
+        android:gravity="center" />
+</layer-list> 

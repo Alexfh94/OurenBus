@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Fondo circular con gradiente -->
+    <path
+        android:fillColor="@color/primary"
+        android:pathData="M0,0h108v108h-108z" />
+    
+    <!-- Círculo interior -->
+    <path
+        android:fillColor="@color/primary_dark"
+        android:pathData="M54,54m-42,0a42,42 0,1 1,84 0a42,42 0,1 1,-84 0" />
+
+    <!-- Icono del autobús moderno -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M72,58H68v-8h4M40,58H36v-8h4M78,39c0,-6 -4,-10 -10,-10H40c-6,0 -10,4 -10,10v22c0,2 1,4 3,5l0,6c0,2 2,4 4,4h4c2,0 4,-2 4,-4v-3h18v3c0,2 2,4 4,4h4c2,0 4,-2 4,-4v-6c2,-1 3,-3 3,-5V39M40,70c-2.2,0 -4,-1.8 -4,-4c0,-2.2 1.8,-4 4,-4c2.2,0 4,1.8 4,4C44,68.2 42.2,70 40,70M68,70c-2.2,0 -4,-1.8 -4,-4c0,-2.2 1.8,-4 4,-4c2.2,0 4,1.8 4,4C72,68.2 70.2,70 68,70M74,50H34V40c0,-1.7 1.3,-3 3,-3h34c1.7,0 3,1.3 3,3V50z" />
+
+    <!-- Texto "OurenBus" moderno -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M27,84L38,84A3,3 0,0 0,41 81L41,81A3,3 0,0 0,38 78L27,78A3,3 0,0 0,24 81L24,81A3,3 0,0 0,27 84z" />
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M46,84L57,84A3,3 0,0 0,60 81L60,81A3,3 0,0 0,57 78L46,78A3,3 0,0 0,43 81L43,81A3,3 0,0 0,46 84z" />
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M65,84L76,84A3,3 0,0 0,79 81L79,81A3,3 0,0 0,76 78L65,78A3,3 0,0 0,62 81L62,81A3,3 0,0 0,65 84z" />
+</vector> 

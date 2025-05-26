@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Fondo circular -->
+    <path
+        android:fillColor="@color/primary_dark"
+        android:pathData="M0,0h108v108h-108z" />
+
+    <!-- Icono del autobús simplificado -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M30,37C30,34.24 32.24,32 35,32L73,32C75.76,32 78,34.24 78,37L78,64C78,66.76 75.76,69 73,69L35,69C32.24,69 30,66.76 30,64L30,37ZM36,64L36,59L72,59L72,64L72,64L36,64ZM72,45L36,45L36,54L72,54L72,45ZM36,40L36,37L72,37L72,40L36,40ZM40,65C41.66,65 43,63.66 43,62C43,60.34 41.66,59 40,59C38.34,59 37,60.34 37,62C37,63.66 38.34,65 40,65ZM68,65C69.66,65 71,63.66 71,62C71,60.34 69.66,59 68,59C66.34,59 65,60.34 65,62C65,63.66 66.34,65 68,65Z" />
+
+    <!-- Texto "OurenBus" simplificado -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M21,79L87,79C88.1,79 89,79.9 89,81L89,81C89,82.1 88.1,83 87,83L21,83C19.9,83 19,82.1 19,81L19,81C19,79.9 19.9,79 21,79Z" />
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M25,77L28,77L28,83L25,83L25,77ZM31,77L37,77L37,79L34,79L34,83L31,83L31,77ZM39,77L45,77L45,79L42,79L42,83L39,83L39,77ZM48,77L54,77L54,79L51,79L51,83L48,83L48,77ZM57,77L63,77L63,79L60,79L60,83L57,83L57,77ZM66,77L72,77L72,79L69,79L69,83L66,83L66,77ZM75,77L81,77L81,79L78,79L78,83L75,83L75,77ZM84,77L87,77L87,83L84,83L84,77Z" />
+</vector> 

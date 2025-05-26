@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="40dp"
+    android:viewportWidth="200"
+    android:viewportHeight="40">
+    
+    <!-- Texto "OurenBus" -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,30c-5.52,0 -10,-4.48 -10,-10s4.48,-10 10,-10c5.52,0 10,4.48 10,10S25.52,30 20,30zM20,15c-2.76,0 -5,2.24 -5,5s2.24,5 5,5s5,-2.24 5,-5S22.76,15 20,15z"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M40,30l0,-20l5,0l0,15l10,0l0,5z"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M60,30l0,-20l5,0l0,8l5,0l0,-8l5,0l0,20l-5,0l0,-7l-5,0l0,7z"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M85,30c-5.52,0 -10,-4.48 -10,-10s4.48,-10 10,-10c5.52,0 10,4.48 10,10S90.52,30 85,30zM85,15c-2.76,0 -5,2.24 -5,5s2.24,5 5,5s5,-2.24 5,-5S87.76,15 85,15z"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M100,30l0,-20l5,0l0,7l5,0l0,-7l5,0l0,20l-5,0l0,-8l-5,0l0,8z"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M120,30l0,-15l-5,0l0,-5l15,0l0,5l-5,0l0,15z"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M135,30l0,-20l15,0l0,5l-10,0l0,3l8,0l0,4l-8,0l0,3l10,0l0,5z"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M155,30l0,-20l5,0l10,12l0,-12l5,0l0,20l-5,0l-10,-12l0,12z"/>
+</vector> 

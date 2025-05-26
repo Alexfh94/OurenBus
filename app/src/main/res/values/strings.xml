@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OurenBus</string>
+    
+    <!-- General -->
+    <string name="ok">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Guardar</string>
+    <string name="back">Volver</string>
+    
+    <!-- Rutas -->
+    <string name="origin_hint">Origen</string>
+    <string name="destination_hint">Destino</string>
+    <string name="current_location">Mi ubicación actual</string>
+    <string name="search_route">Buscar ruta</string>
+    <string name="start_navigation">Iniciar navegación</string>
+    <string name="recalculating">Recalculando ruta...</string>
+    <string name="searching">Buscando...</string>
+    <string name="searching_route">Buscando la mejor ruta...</string>
+    <string name="route_found">¡Ruta encontrada! Tiempo estimado: %1$d min</string>
+    
+    <!-- Navegación -->
+    <string name="next_step">Siguiente paso</string>
+    <string name="estimated_time">Tiempo estimado: %1$d min</string>
+    <string name="navigation_title">Navegación en curso</string>
+    
+    <!-- Favoritos -->
+    <string name="favorites">Favoritos</string>
+    <string name="save_favorite">Guardar en favoritos</string>
+    <string name="save_favorite_message">¿Desea guardar esta ruta en favoritos?</string>
+    <string name="favorite_route_default_name">Ruta guardada</string>
+    <string name="no_favorites">No tienes rutas favoritas</string>
+    <string name="delete_favorite">Eliminar favorito</string>
+    
+    <!-- Perfil -->
+    <string name="profile">Perfil</string>
+    <string name="profile_name">Nombre</string>
+    <string name="profile_email">Email</string>
+    <string name="profile_preferences">Preferencias</string>
+    <string name="profile_save">Guardar cambios</string>
+    <string name="profile_logout">Cerrar sesión</string>
+    <string name="profile_saved">Perfil guardado correctamente</string>
+    
+    <!-- Ajustes -->
+    <string name="settings">Ajustes</string>
+    <string name="settings_notifications">Notificaciones</string>
+    <string name="notifications_enabled">Activar notificaciones</string>
+    <string name="notifications_disabled">Notificaciones desactivadas</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_location">Ubicación</string>
+    <string name="settings_about">Acerca de</string>
+    <string name="theme">Tema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="theme_system">Sistema</string>
+    <string name="app_version">Versión %1$s</string>
+    <string name="data_cleared">Datos borrados correctamente</string>
+    <string name="location_always_enabled">Siempre activada</string>
+    <string name="location_when_using">Solo al usar la app</string>
+    
+    <!-- Errores -->
+    <string name="error_location_permission">Se requiere permiso de ubicación</string>
+    <string name="error_no_route">No se ha podido calcular la ruta</string>
+    <string name="error_required_field">Este campo es obligatorio</string>
+    <string name="error_invalid_email">Email no válido</string>
+    <string name="error_origin_empty">Por favor, introduce un origen</string>
+    <string name="error_destination_empty">Por favor, introduce un destino</string>
+    <string name="error_select_origin">Por favor, selecciona un origen válido</string>
+    <string name="error_select_destination">Por favor, selecciona un destino válido</string>
+    <string name="error_location_not_available">No se pudo obtener tu ubicación actual</string>
+</resources>
