@@ -79,7 +79,9 @@ public class FavoriteRoutesAdapter extends ListAdapter<Route, FavoriteRoutesAdap
             // Fecha de guardado
             Date savedDate = route.getSavedDate();
             if (savedDate != null) {
-                String formattedDate = ((SimpleDateFormat) itemView.getTag()).format(savedDate);
+                // Formatear fecha de guardado
+                SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+                String formattedDate = fmt.format(savedDate);
                 tvRouteSavedDate.setText(formattedDate);
             } else {
                 tvRouteSavedDate.setText("");
@@ -116,8 +118,10 @@ public class FavoriteRoutesAdapter extends ListAdapter<Route, FavoriteRoutesAdap
     private static final DiffUtil.ItemCallback<Route> DIFF_CALLBACK = new DiffUtil.ItemCallback<Route>() {
         @Override
         public boolean areItemsTheSame(@NonNull Route oldItem, @NonNull Route newItem) {
-            // Comparamos por ID
-            return oldItem.getId() == newItem.getId();
+            // Comparamos por combinación estable de origen/destino (coordenadas) y nombre
+            String oldKey = buildKey(oldItem);
+            String newKey = buildKey(newItem);
+            return oldKey.equals(newKey);
         }
 
         @Override
@@ -126,4 +130,12 @@ public class FavoriteRoutesAdapter extends ListAdapter<Route, FavoriteRoutesAdap
             return oldItem.equals(newItem);
         }
     };
+
+    private static String buildKey(Route r) {
+        if (r == null || r.getOrigin() == null || r.getDestination() == null) return String.valueOf(r != null ? r.getId() : 0);
+        return String.format(java.util.Locale.US, "%s|%.6f,%.6f|%.6f,%.6f",
+                r.getName() != null ? r.getName() : "",
+                r.getOrigin().getLatitude(), r.getOrigin().getLongitude(),
+                r.getDestination().getLatitude(), r.getDestination().getLongitude());
+    }
 } 

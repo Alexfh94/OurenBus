@@ -15,7 +15,7 @@ import com.example.ourenbus2.database.entity.UserEntity;
 /**
  * Clase principal de la base de datos de la aplicación.
  */
-@Database(entities = {UserEntity.class, FavoriteRouteEntity.class}, version = 1, exportSchema = false)
+@Database(entities = {UserEntity.class, FavoriteRouteEntity.class}, version = 2, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 

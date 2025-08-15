@@ -59,4 +59,12 @@ public class UserViewModel extends AndroidViewModel {
     public LiveData<User> getCurrentUser() {
         return currentUser;
     }
+
+    /**
+     * Cierra la sesión del usuario actual y limpia la preferencia
+     */
+    public void logout() {
+        userRepository.deleteUser();
+        currentUser.setValue(null);
+    }
 } 

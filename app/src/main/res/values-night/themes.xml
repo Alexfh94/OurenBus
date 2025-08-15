@@ -2,22 +2,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme for dark mode. -->
     <style name="Base.Theme.OurenBus" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primary_light</item>
         <item name="colorPrimaryVariant">@color/primary</item>
         <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/accent</item>
         <item name="colorSecondaryVariant">@color/accent</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Typography -->
         <item name="android:fontFamily">sans-serif</item>
-        <!-- Customize your theme here. -->
         <item name="colorSurface">@color/dark_surface</item>
         <item name="colorOnSurface">@color/white</item>
         <item name="colorOnSurfaceVariant">@color/light_grey</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
     <style name="Theme.OurenBus2" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -37,27 +32,27 @@
         <item name="colorOnSurfaceVariant">@color/light_grey</item>
         <item name="android:textColor">@color/white</item>
     </style>
-    
+
     <style name="Widget.OurenBus.CardView.Dark" parent="Widget.MaterialComponents.CardView">
         <item name="cardElevation">4dp</item>
         <item name="cardCornerRadius">8dp</item>
         <item name="cardBackgroundColor">?attr/colorSurface</item>
         <item name="cardUseCompatPadding">true</item>
     </style>
-    
+
     <style name="Widget.OurenBus.Toolbar.Dark" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:background">?attr/colorSurface</item>
         <item name="titleTextColor">?attr/colorOnSurface</item>
         <item name="subtitleTextColor">?attr/colorOnSurfaceVariant</item>
         <item name="android:elevation">4dp</item>
     </style>
-    
+
     <style name="Widget.OurenBus.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="cornerRadius">8dp</item>
         <item name="android:padding">12dp</item>
     </style>
-    
+
     <style name="Widget.OurenBus.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">?attr/colorPrimary</item>
         <item name="hintTextColor">?attr/colorPrimary</item>

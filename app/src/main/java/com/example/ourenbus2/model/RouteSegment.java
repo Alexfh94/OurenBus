@@ -32,6 +32,10 @@ public class RouteSegment {
     private Date startTime;
     private Date endTime;
     private String instructions;
+
+    // Polilínea codificada (cuando viene de Directions)
+    @Ignore
+    private String polylineEncoded;
     
     // Relaciones con otras entidades
     @Ignore
@@ -123,6 +127,14 @@ public class RouteSegment {
 
     public void setInstructions(String instructions) {
         this.instructions = instructions;
+    }
+
+    public String getPolylineEncoded() {
+        return polylineEncoded;
+    }
+
+    public void setPolylineEncoded(String polylineEncoded) {
+        this.polylineEncoded = polylineEncoded;
     }
 
     public Location getStartLocation() {

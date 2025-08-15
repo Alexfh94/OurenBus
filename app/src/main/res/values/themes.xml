@@ -17,6 +17,8 @@
         <item name="colorSurface">@color/white</item>
         <item name="colorOnSurface">@color/black</item>
         <item name="colorOnSurfaceVariant">@color/grey</item>
+        <!-- Preferencias siguen el tema Material3 por superficie -->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
     <style name="Theme.OurenBus" parent="Base.Theme.OurenBus" />

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ourenbus2.R;
 import com.example.ourenbus2.model.RouteSegment;
 import com.example.ourenbus2.ui.adapter.NavigationStepsAdapter;
+import com.example.ourenbus2.util.NavigationSession;
 import com.example.ourenbus2.ui.viewmodel.NavigationViewModel;
 
 /**

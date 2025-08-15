@@ -16,6 +16,7 @@ public class UserEntity {
     private String id;
     private String name;
     private String email;
+    private String password;
     private String profileImagePath;
 
     /**
@@ -33,11 +34,18 @@ public class UserEntity {
      * @param profileImagePath Ruta de la imagen de perfil
      */
     @Ignore
-    public UserEntity(@NonNull String id, String name, String email, String profileImagePath) {
+    public UserEntity(@NonNull String id, String name, String email, String profileImagePath, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.profileImagePath = profileImagePath;
+        this.password = password;
+    }
+
+    // Compatibilidad con llamadas existentes (sin password)
+    @Ignore
+    public UserEntity(@NonNull String id, String name, String email, String profileImagePath) {
+        this(id, name, email, profileImagePath, "");
     }
 
     /**
@@ -93,6 +101,14 @@ public class UserEntity {
      */
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     /**

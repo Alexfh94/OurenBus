@@ -14,6 +14,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["mapsApiKey"] = project.findProperty("MAPS_API_KEY") ?: ""
+        buildConfigField("String", "MAPS_API_KEY", "\"${project.findProperty("MAPS_API_KEY") ?: ""}\"")
     }
 
     buildTypes {
@@ -42,9 +44,13 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     
-    // Google Maps & Location
+    // Google Maps, Places & Location
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.google.android.gms:play-services-location:21.1.0")
+    implementation("com.google.android.libraries.places:places:3.5.0")
+    implementation("com.google.maps.android:android-maps-utils:3.8.2")
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+    implementation("androidx.preference:preference:1.2.1")
     
     // ViewModel and LiveData
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
@@ -58,6 +64,11 @@ dependencies {
     // Navigation Component
     implementation("androidx.navigation:navigation-fragment:2.7.7")
     implementation("androidx.navigation:navigation-ui:2.7.7")
+
+    // Networking
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     
     // Testing
     testImplementation(libs.junit)

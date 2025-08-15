@@ -16,16 +16,18 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/origin_hint"
+        app:endIconMode="dropdown_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:startIconDrawable="@drawable/ic_location">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/et_origin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:inputType="text"
+            android:imeOptions="actionNext" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -46,16 +48,18 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_medium"
         android:hint="@string/destination_hint"
+        app:endIconMode="dropdown_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cb_use_current_location"
         app:startIconDrawable="@drawable/ic_location">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/et_destination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:inputType="text"
+            android:imeOptions="actionSearch" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -72,16 +76,16 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_location_suggestions"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/spacing_small"
         android:background="?attr/colorSurface"
         android:elevation="@dimen/elevation_card"
         android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/btn_search_route"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_search_route"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/item_location_suggestion"
         tools:visibility="visible" />
 

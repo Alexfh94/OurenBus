@@ -1,12 +1,16 @@
 package com.example.ourenbus2.repository;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 
 import com.example.ourenbus2.model.Location;
 import com.example.ourenbus2.service.LocationService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Repositorio para gestionar operaciones relacionadas con ubicaciones
@@ -15,6 +19,7 @@ public class LocationRepository {
     
     private final Context context;
     private final LocationService locationService;
+    private final Geocoder geocoder;
     
     // Radio máximo para buscar ubicaciones (en km)
     private static final float MAX_SEARCH_RADIUS_KM = 20.0f;
@@ -22,54 +27,66 @@ public class LocationRepository {
     public LocationRepository(Context context) {
         this.context = context;
         this.locationService = LocationService.getInstance(context);
+        this.geocoder = new Geocoder(context, Locale.getDefault());
     }
     
     /**
      * Busca ubicaciones según un término de búsqueda y filtra por distancia
-     * En una app real, esto podría consultar una API o base de datos local
+     * Combina resultados locales con geocodificación del sistema
      */
     public List<Location> searchLocations(String query) {
-        // Obtener todas las ubicaciones que coinciden con la consulta
+        // Obtener ubicaciones locales que coinciden con la consulta
         List<Location> allLocations = searchAllLocations(query);
-        List<Location> nearbyLocations = new ArrayList<>();
         
-        // Obtener la ubicación actual
-        android.location.Location currentLocation = locationService.getLastKnownLocation();
-        
-        if (currentLocation == null) {
-            // Si no hay ubicación actual, devolver todas las ubicaciones sin filtrar
-            return allLocations;
-        }
-        
-        // Filtrar ubicaciones por distancia (máximo 20km)
-        for (Location location : allLocations) {
-            float[] results = new float[1];
-            android.location.Location.distanceBetween(
-                    currentLocation.getLatitude(), currentLocation.getLongitude(),
-                    location.getLatitude(), location.getLongitude(),
-                    results);
-            
-            float distanceInKm = results[0] / 1000; // Convertir a km
-            
-            if (distanceInKm <= MAX_SEARCH_RADIUS_KM) {
-                // Añadir la distancia a la descripción de la ubicación
-                String description = location.getDescription();
-                if (distanceInKm < 1) {
-                    description += " (" + Math.round(distanceInKm * 1000) + "m)";
-                } else {
-                    description += " (" + String.format("%.1f", distanceInKm) + "km)";
+        // Añadir resultados de geocodificación si la consulta es suficientemente específica
+        List<Location> geocoded = geocodeLocations(query, 5);
+        if (geocoded != null && !geocoded.isEmpty()) {
+            // Evitar duplicados simples por nombre + coords
+            for (Location loc : geocoded) {
+                boolean exists = false;
+                for (Location existing : allLocations) {
+                    if (existing.getName().equalsIgnoreCase(loc.getName()) &&
+                        Math.abs(existing.getLatitude() - loc.getLatitude()) < 1e-5 &&
+                        Math.abs(existing.getLongitude() - loc.getLongitude()) < 1e-5) {
+                        exists = true;
+                        break;
+                    }
                 }
-                location.setDescription(description);
-                
-                nearbyLocations.add(location);
+                if (!exists) {
+                    allLocations.add(loc);
+                }
             }
         }
         
-        return nearbyLocations;
+        // Preparar lista final (sin filtrar por distancia para no ocultar Ourense en emuladores)
+        List<Location> resultsWithDistance = new ArrayList<>(allLocations);
+        
+        // Añadir etiqueta de distancia si hay ubicación actual (solo informativa)
+        android.location.Location currentLocation = locationService.getLastKnownLocation();
+        if (currentLocation != null) {
+            for (Location location : resultsWithDistance) {
+                float[] d = new float[1];
+                android.location.Location.distanceBetween(
+                        currentLocation.getLatitude(), currentLocation.getLongitude(),
+                        location.getLatitude(), location.getLongitude(),
+                        d);
+                float distanceInKm = d[0] / 1000f;
+                String description = location.getDescription();
+                if (description == null) description = "";
+                String distanceLabel = distanceInKm < 1 ? (Math.round(distanceInKm * 1000) + "m")
+                        : (String.format(Locale.getDefault(), "%.1fkm", distanceInKm));
+                if (!description.contains(distanceLabel)) {
+                    description = description.isEmpty() ? distanceLabel : (description + " (" + distanceLabel + ")");
+                }
+                location.setDescription(description);
+            }
+        }
+        
+        return resultsWithDistance;
     }
     
     /**
-     * Busca todas las ubicaciones que coinciden con la consulta
+     * Busca todas las ubicaciones que coinciden con la consulta (listas locales de Ourense)
      */
     private List<Location> searchAllLocations(String query) {
         List<Location> results = new ArrayList<>();
@@ -78,7 +95,7 @@ public class LocationRepository {
             return results;
         }
         
-        query = query.toLowerCase().trim();
+        query = query.toLowerCase(Locale.getDefault()).trim();
         
         // Crear algunas ubicaciones de ejemplo relevantes para Ourense
         if ("campus".contains(query) || "universidad".contains(query) || query.contains("camp") || query.contains("univ")) {
@@ -166,5 +183,34 @@ public class LocationRepository {
         }
         
         return results;
+    }
+    
+    /**
+     * Usa Geocoder para obtener direcciones reales según el texto
+     */
+    private List<Location> geocodeLocations(String query, int maxResults) {
+        if (query == null || query.trim().length() < 3) return new ArrayList<>();
+        try {
+            // Restringir a Ourense/Galicia para mayor relevancia
+            List<Address> addresses = geocoder.getFromLocationName(query + ", Ourense", maxResults);
+            List<Location> results = new ArrayList<>();
+            if (addresses != null) {
+                for (Address a : addresses) {
+                    if (a == null || a.getLatitude() == 0 && a.getLongitude() == 0) continue;
+                    String name = a.getFeatureName() != null ? a.getFeatureName() : (a.getThoroughfare() != null ? a.getThoroughfare() : "Dirección");
+                    StringBuilder desc = new StringBuilder();
+                    if (a.getThoroughfare() != null) desc.append(a.getThoroughfare()).append(" ");
+                    if (a.getSubThoroughfare() != null) desc.append(a.getSubThoroughfare()).append(", ");
+                    if (a.getLocality() != null) desc.append(a.getLocality()).append(", ");
+                    if (a.getAdminArea() != null) desc.append(a.getAdminArea()).append(", ");
+                    if (a.getCountryName() != null) desc.append(a.getCountryName());
+                    String description = desc.toString().replaceAll(", $", "").trim();
+                    results.add(new Location(name, description, a.getLatitude(), a.getLongitude()));
+                }
+            }
+            return results;
+        } catch (IOException e) {
+            return new ArrayList<>();
+        }
     }
 } 

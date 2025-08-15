@@ -118,10 +118,14 @@ public class RouteGenerator {
         segment.setEndLocation(end);
         segment.setTimeInMinutes(timeInMinutes);
         
-        // Usar (int) para la conversión explícita
         segment.setDistance((int)(calculateDistance(
                 start.getLatitude(), start.getLongitude(),
                 end.getLatitude(), end.getLongitude()) * 1000)); // convertir a metros
+        
+        // Instrucciones
+        String endName = end.getName() != null ? end.getName() : "el destino";
+        String instructions = "Camina hasta " + endName + " (aprox. " + timeInMinutes + " min, " + segment.getDistance() + " m)";
+        segment.setInstructions(instructions);
         return segment;
     }
     
@@ -153,10 +157,16 @@ public class RouteGenerator {
         segment.setBusStop(start);
         segment.setTimeInMinutes(timeInMinutes);
         
-        // Usar (int) para la conversión explícita
         segment.setDistance((int)(calculateDistance(
                 start.getLatitude(), start.getLongitude(),
                 end.getLatitude(), end.getLongitude()) * 1000)); // convertir a metros
+        
+        // Instrucciones
+        String lineName = busLine != null ? ("línea " + busLine.getLineNumber()) : "autobús";
+        int stops = Math.max(2, timeInMinutes / 3); // estimación simple de paradas
+        String instructions = "Toma la " + lineName + " desde " + start.getName() + " hasta " + end.getName() +
+                " (aprox. " + timeInMinutes + " min, " + stops + " paradas, " + segment.getDistance() + " m)";
+        segment.setInstructions(instructions);
         return segment;
     }
     

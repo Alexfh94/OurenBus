@@ -12,6 +12,7 @@ import com.example.ourenbus2.service.LocationService;
 import com.example.ourenbus2.ui.fragments.NavigationMapFragment;
 import com.example.ourenbus2.ui.fragments.NavigationStepsFragment;
 import com.example.ourenbus2.ui.viewmodel.NavigationViewModel;
+import com.example.ourenbus2.util.NavigationSession;
 
 /**
  * Actividad para la navegación paso a paso
@@ -31,6 +32,12 @@ public class NavigationActivity extends AppCompatActivity {
         
         // Inicializar ViewModel
         viewModel = new ViewModelProvider(this).get(NavigationViewModel.class);
+        
+        // Iniciar navegación con la ruta seleccionada (si existe)
+        com.example.ourenbus2.model.Route currentRoute = NavigationSession.getCurrentRoute();
+        if (currentRoute != null && currentRoute.isValid()) {
+            viewModel.startNavigation(currentRoute);
+        }
         
         // Configurar toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);

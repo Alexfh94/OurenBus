@@ -26,6 +26,7 @@ public class ProfileFragment extends Fragment {
     private EditText etName;
     private EditText etEmail;
     private Button btnSave;
+    private Button btnLogout;
 
     @Nullable
     @Override
@@ -41,6 +42,7 @@ public class ProfileFragment extends Fragment {
         etName = view.findViewById(R.id.et_name);
         etEmail = view.findViewById(R.id.et_email);
         btnSave = view.findViewById(R.id.btn_save_profile);
+        btnLogout = view.findViewById(R.id.btn_logout);
         
         // Inicializar ViewModel
         viewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
@@ -50,6 +52,7 @@ public class ProfileFragment extends Fragment {
         
         // Configurar listener del botón guardar
         btnSave.setOnClickListener(v -> saveProfile());
+        btnLogout.setOnClickListener(v -> doLogout());
     }
     
     /**
@@ -89,7 +92,14 @@ public class ProfileFragment extends Fragment {
         viewModel.updateUser(updatedUser);
         Toast.makeText(requireContext(), R.string.profile_saved, Toast.LENGTH_SHORT).show();
         
-        // Volver atrás
-        requireActivity().getSupportFragmentManager().popBackStack();
+        // Permanecer en la misma pantalla (no navegar atrás)
+    }
+
+    private void doLogout() {
+        viewModel.logout();
+        // Ir a LoginActivity y limpiar back stack
+        android.content.Intent i = new android.content.Intent(requireContext(), com.example.ourenbus2.auth.LoginActivity.class);
+        i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
     }
 } 

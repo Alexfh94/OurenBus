@@ -25,8 +25,10 @@
             android:value="${mapsApiKey}" />
 
         <!-- Actividad de carga inicial -->
+        <activity android:name=".MainActivity" android:exported="true" />
+
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.OurenBus.Splash">
             <intent-filter>
@@ -34,6 +36,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".auth.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".auth.RegisterActivity"
+            android:exported="false" />
 
         <!-- Actividad de navegación -->
         <activity

@@ -31,6 +31,7 @@
     <string name="favorite_route_default_name">Ruta guardada</string>
     <string name="no_favorites">No tienes rutas favoritas</string>
     <string name="delete_favorite">Eliminar favorito</string>
+    <string name="favorite_name">Nombre de la ruta</string>
     
     <!-- Perfil -->
     <string name="profile">Perfil</string>
@@ -40,6 +41,14 @@
     <string name="profile_save">Guardar cambios</string>
     <string name="profile_logout">Cerrar sesión</string>
     <string name="profile_saved">Perfil guardado correctamente</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="register">Registrarse</string>
+    <string name="password">Contraseña</string>
+    <string name="session_started">¡Sesión iniciada!</string>
+    <string name="user_not_found">Usuario no encontrado</string>
+    <string name="invalid_credentials">Email / Contraseña incorrectos</string>
+    <string name="clear_favorites">Borrar todas las rutas favoritas</string>
+    <string name="favorites_cleared">Rutas favoritas eliminadas</string>
     
     <!-- Ajustes -->
     <string name="settings">Ajustes</string>

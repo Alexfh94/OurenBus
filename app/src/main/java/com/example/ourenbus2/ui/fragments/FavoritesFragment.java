@@ -50,8 +50,20 @@ public class FavoritesFragment extends Fragment implements FavoriteRoutesAdapter
         // Configurar RecyclerView
         setupRecyclerView();
         
-        // Observar cambios en las rutas favoritas
+        // Observar cambios en las rutas favoritas (lista completa)
         viewModel.getFavoriteRoutes().observe(getViewLifecycleOwner(), this::updateUI);
+
+        // Buscador por nombre
+        android.widget.EditText search = view.findViewById(R.id.et_search_favorites);
+        if (search != null) {
+            search.addTextChangedListener(new android.text.TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+                @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }
+                @Override public void afterTextChanged(android.text.Editable s) {
+                    filterList(s != null ? s.toString() : "");
+                }
+            });
+        }
     }
     
     private void setupRecyclerView() {
@@ -70,12 +82,24 @@ public class FavoritesFragment extends Fragment implements FavoriteRoutesAdapter
             rvFavorites.setVisibility(View.GONE);
         }
     }
+
+    private void filterList(String query) {
+        List<Route> current = viewModel.getFavoriteRoutes().getValue();
+        if (current == null) { updateUI(null); return; }
+        if (query == null || query.trim().isEmpty()) { updateUI(current); return; }
+        String q = query.toLowerCase();
+        java.util.List<Route> filtered = new java.util.ArrayList<>();
+        for (Route r : current) {
+            String name = r.getName() != null ? r.getName() : (r.getOrigin().getName() + " → " + r.getDestination().getName());
+            if (name.toLowerCase().contains(q)) filtered.add(r);
+        }
+        updateUI(filtered);
+    }
     
     @Override
     public void onRouteClicked(Route route) {
-        // Navegar a la actividad principal con esta ruta seleccionada
+        // Comunicar selección; MainActivity observará y volverá a la vista principal
         viewModel.selectRoute(route);
-        requireActivity().getSupportFragmentManager().popBackStack();
     }
     
     @Override

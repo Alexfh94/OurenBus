@@ -28,6 +28,8 @@ import com.example.ourenbus2.ui.viewmodel.RouteViewModel;
 import com.example.ourenbus2.util.PreferencesUtil;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 /**
  * Actividad principal de la aplicación
@@ -35,6 +37,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity {
     
     private RouteViewModel viewModel;
+    private com.example.ourenbus2.ui.viewmodel.FavoriteRoutesViewModel favoritesViewModel;
     private Button btnStartNavigation;
     private FloatingActionButton fabSaveFavorite;
     private ConstraintLayout bottomActions;
@@ -61,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         
         // Inicializar ViewModel
         viewModel = new ViewModelProvider(this).get(RouteViewModel.class);
+        favoritesViewModel = new ViewModelProvider(this).get(com.example.ourenbus2.ui.viewmodel.FavoriteRoutesViewModel.class);
         
         // Inicializar vistas
         btnStartNavigation = findViewById(R.id.btn_start_navigation);
@@ -75,12 +79,33 @@ public class MainActivity extends AppCompatActivity {
         
         // Observar cambios en el ViewModel
         observeViewModel();
+        observeFavoritesSelection();
+
+        // Propagar usuario actual a favoritos para filtrar por usuario
+        com.example.ourenbus2.ui.viewmodel.UserViewModel userVM = new ViewModelProvider(this).get(com.example.ourenbus2.ui.viewmodel.UserViewModel.class);
+        userVM.getCurrentUser().observe(this, user -> {
+            favoritesViewModel.onUserChanged(user);
+        });
+    }
+
+    private void observeFavoritesSelection() {
+        favoritesViewModel.getSelectedRoute().observe(this, route -> {
+            if (route != null) {
+                // Restaurar vista principal si venimos de favoritos
+                returnToMainView();
+                // Establecer origen/destino y buscar ruta automáticamente
+                viewModel.setOrigin(route.getOrigin());
+                viewModel.setDestination(route.getDestination());
+                viewModel.searchRoute(route.getOrigin(), route.getDestination());
+            }
+        });
     }
     
     private void setupListeners() {
         btnStartNavigation.setOnClickListener(v -> {
             Route currentRoute = viewModel.getCurrentRoute().getValue();
             if (currentRoute != null && currentRoute.isValid()) {
+                com.example.ourenbus2.util.NavigationSession.setCurrentRoute(currentRoute);
                 Intent intent = new Intent(this, NavigationActivity.class);
                 startActivity(intent);
             }
@@ -110,15 +135,22 @@ public class MainActivity extends AppCompatActivity {
             btnStartNavigation.setEnabled(validRoute);
             fabSaveFavorite.setEnabled(validRoute);
         });
+
+        // Refrescar lista de favoritos al añadir/borrar sin relanzar
+        favoritesViewModel.getFavoriteRoutes().observe(this, routes -> {
+            // no-op: los fragmentos observan esta LiveData; esta suscripción asegura que se mantenga activa
+        });
     }
     
     private void showSaveFavoriteDialog() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_save_favorite, null);
+        TextInputLayout til = dialogView.findViewById(R.id.til_favorite_name);
+        TextInputEditText et = dialogView.findViewById(R.id.et_favorite_name);
         new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.save_favorite)
-                .setMessage(R.string.save_favorite_message)
+                .setView(dialogView)
                 .setPositiveButton(R.string.save, (dialog, which) -> {
-                    // Obtener nombre de la ruta (aquí se podría mostrar un campo de texto)
-                    String routeName = getString(R.string.favorite_route_default_name);
+                    String routeName = et.getText() != null ? et.getText().toString().trim() : "";
                     viewModel.saveRouteToFavorites(routeName);
                 })
                 .setNegativeButton(R.string.cancel, null)
@@ -268,25 +300,12 @@ public class MainActivity extends AppCompatActivity {
     }
     
     private void toggleTheme() {
-        // Verificar si estamos en la pantalla de ajustes
-        boolean isInSettingsScreen = false;
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.main_container);
-        
-        // Comprobar si el fragmento actual es SettingsFragment
-        if (currentFragment instanceof SettingsFragment) {
-            isInSettingsScreen = true;
-        }
-        
-        // Usar el método para cambiar el tema
+        // Cambiar tema sin navegar de la vista actual
         PreferencesUtil.toggleTheme(this);
-        
-        // Actualizar el menú después de cambiar el tema
+        // Actualizar título/icono del menú
         invalidateOptionsMenu();
-        
-        // Si estamos en un fragmento secundario que no es ajustes, volver a la pantalla principal
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0 && !isInSettingsScreen) {
-            returnToMainView();
-        }
+        // Recrear solo esta Activity para aplicar tema sin cambiar la navegación
+        recreate();
     }
     
     @Override

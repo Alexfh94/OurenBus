@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Fondo color azul oscuro -->
-    <item android:drawable="@color/primary_dark" />
-    
-    <!-- Icono completo centrado -->
+    <!-- Fondo -->
+    <item android:drawable="@color/ourenbus_dark_blue" />
+    <!-- Logo centrado a color (vector directamente como drawable) -->
     <item
         android:drawable="@drawable/ic_ourenbus_minimal"
         android:gravity="center" />

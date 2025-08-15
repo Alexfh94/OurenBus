@@ -57,8 +57,8 @@ public interface FavoriteRouteDao {
      *
      * @return Lista de todas las rutas favoritas
      */
-    @Query("SELECT * FROM favorite_routes ORDER BY timestamp DESC")
-    LiveData<List<FavoriteRouteEntity>> getAllFavoriteRoutes();
+    @Query("SELECT * FROM favorite_routes WHERE userEmail = :email ORDER BY timestamp DESC")
+    LiveData<List<FavoriteRouteEntity>> getAllFavoriteRoutes(String email);
 
     /**
      * Elimina una ruta favorita por su ID.
@@ -69,11 +69,23 @@ public interface FavoriteRouteDao {
     void deleteFavoriteRouteById(long id);
 
     /**
+     * Elimina por usuario, nombre y datos exactos de ruta
+     */
+    @Query("DELETE FROM favorite_routes WHERE userEmail = :email AND name = :name AND routeData = :routeData")
+    void deleteByUserNameData(String email, String name, String routeData);
+
+    /**
+     * Elimina todas las rutas favoritas.
+     */
+    @Query("DELETE FROM favorite_routes")
+    void deleteAll();
+
+    /**
      * Busca rutas favoritas que coincidan con el texto de búsqueda.
      *
      * @param searchText Texto de búsqueda
      * @return Lista de rutas favoritas que coinciden con el texto de búsqueda
      */
-    @Query("SELECT * FROM favorite_routes WHERE name LIKE '%' || :searchText || '%' ORDER BY timestamp DESC")
-    LiveData<List<FavoriteRouteEntity>> searchFavoriteRoutes(String searchText);
+    @Query("SELECT * FROM favorite_routes WHERE userEmail = :email AND name LIKE '%' || :searchText || '%' ORDER BY timestamp DESC")
+    LiveData<List<FavoriteRouteEntity>> searchFavoriteRoutes(String email, String searchText);
 } 

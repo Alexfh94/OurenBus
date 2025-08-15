@@ -25,6 +25,7 @@ public class FavoriteRoutesViewModel extends AndroidViewModel {
     public FavoriteRoutesViewModel(@NonNull Application application) {
         super(application);
         repository = new FavoriteRouteRepository(application);
+        // LiveData gestionada por el repositorio (se actualiza al cambiar de usuario)
         favoriteRoutes = repository.getAllFavoriteRoutes();
     }
 
@@ -40,7 +41,12 @@ public class FavoriteRoutesViewModel extends AndroidViewModel {
      */
     public void deleteRoute(Route route) {
         if (route != null) {
-            repository.deleteRoute(route);
+            if (route.getId() > 0) {
+                repository.deleteById(route.getId());
+            } else {
+                // Coincidencia por usuario+contenido si no tenemos id
+                repository.deleteByUserAndContent(route);
+            }
         }
     }
 
@@ -49,6 +55,10 @@ public class FavoriteRoutesViewModel extends AndroidViewModel {
      */
     public void selectRoute(Route route) {
         selectedRoute.setValue(route);
+    }
+
+    public void onUserChanged(com.example.ourenbus2.model.User user) {
+        repository.setCurrentUser(user != null ? user.getEmail() : null);
     }
 
     /**

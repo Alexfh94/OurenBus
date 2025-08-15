@@ -66,4 +66,10 @@ public interface UserDao {
      */
     @Query("SELECT * FROM users LIMIT 1")
     LiveData<UserEntity> getCurrentUser();
+
+    /**
+     * Obtiene un usuario por su email.
+     */
+    @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
+    UserEntity getUserByEmailSync(String email);
 } 

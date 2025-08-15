@@ -84,9 +84,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         break;
                 }
                 
-                // Guardar y aplicar el tema
+                // Guardar y aplicar el tema sin salir de Ajustes
                 PreferencesUtil.saveThemePreference(requireContext(), themeMode);
                 AppCompatDelegate.setDefaultNightMode(themeMode);
+                requireActivity().recreate();
                 return true;
             });
         }
@@ -113,6 +114,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             clearDataPref.setOnPreferenceClickListener(preference -> {
                 // En una aplicación real, aquí limpiaríamos los datos
                 Toast.makeText(requireContext(), R.string.data_cleared, Toast.LENGTH_SHORT).show();
+                return true;
+            });
+        }
+
+        Preference clearFavorites = findPreference("clear_favorites");
+        if (clearFavorites != null) {
+            clearFavorites.setOnPreferenceClickListener(pref -> {
+                new Thread(() -> {
+                    com.example.ourenbus2.database.AppDatabase db = com.example.ourenbus2.database.AppDatabase.getInstance(requireContext());
+                    db.favoriteRouteDao().deleteAll();
+                    requireActivity().runOnUiThread(() ->
+                            Toast.makeText(requireContext(), R.string.favorites_cleared, Toast.LENGTH_SHORT).show());
+                }).start();
                 return true;
             });
         }

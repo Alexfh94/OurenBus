@@ -53,6 +53,7 @@ public class NavigationMapFragment extends Fragment implements OnMapReadyCallbac
     private FloatingActionButton fabMyLocation;
     private FloatingActionButton fabZoomIn;
     private FloatingActionButton fabZoomOut;
+    private FloatingActionButton fabNavigationMode;
     private boolean followUserLocation = true;
 
     @Nullable
@@ -70,6 +71,7 @@ public class NavigationMapFragment extends Fragment implements OnMapReadyCallbac
         
         // Referencias a vistas
         fabMyLocation = view.findViewById(R.id.fab_my_location);
+        fabNavigationMode = view.findViewById(R.id.fab_navigation_mode);
         fabZoomIn = view.findViewById(R.id.fab_zoom_in);
         fabZoomOut = view.findViewById(R.id.fab_zoom_out);
         
@@ -77,7 +79,7 @@ public class NavigationMapFragment extends Fragment implements OnMapReadyCallbac
         setupListeners();
         
         // Obtener referencia al mapa
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.navigation_map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
@@ -93,6 +95,10 @@ public class NavigationMapFragment extends Fragment implements OnMapReadyCallbac
         fabMyLocation.setOnClickListener(v -> {
             followUserLocation = true;
             showMyLocation();
+        });
+        fabNavigationMode.setOnClickListener(v -> {
+            followUserLocation = true;
+            enableNavigationCamera();
         });
         
         fabZoomIn.setOnClickListener(v -> {
@@ -153,7 +159,13 @@ public class NavigationMapFragment extends Fragment implements OnMapReadyCallbac
         });
         
         // Observar cambios en los segmentos de ruta
-        viewModel.getRouteSegments().observe(getViewLifecycleOwner(), this::drawRoute);
+        viewModel.getRouteSegments().observe(getViewLifecycleOwner(), segments -> {
+            drawRoute(segments);
+            // si hay segmentos, centrar a la ruta inmediatamente al abrir
+            if (segments != null && !segments.isEmpty()) {
+                followUserLocation = false; // evitar que se mueva a la ubicación antes de ver la ruta
+            }
+        });
         
         // Observar cambios en el segmento activo
         viewModel.getActiveSegment().observe(getViewLifecycleOwner(), this::highlightActiveSegment);
@@ -172,81 +184,104 @@ public class NavigationMapFragment extends Fragment implements OnMapReadyCallbac
         if (googleMap == null || segments == null || segments.isEmpty()) {
             return;
         }
-        
-        // Limpiar mapa
+
         googleMap.clear();
-        
-        // Preparar para calcular bounds para ajustar la cámara
+
         LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
-        
-        // Dibujar cada segmento
+
         for (RouteSegment segment : segments) {
             Location start = segment.getStartLocation();
             Location end = segment.getEndLocation();
-            
-            if (start != null && end != null) {
-                LatLng startLatLng = new LatLng(start.getLatitude(), start.getLongitude());
-                LatLng endLatLng = new LatLng(end.getLatitude(), end.getLongitude());
-                
-                // Color según el tipo de segmento
-                int color;
-                switch (segment.getType()) {
-                    case BUS:
-                        // Si es bus, usar el color de la línea
-                        color = Color.parseColor(segment.getBusLine().getColor());
-                        break;
-                    case WALKING:
-                        color = Color.GRAY;
-                        break;
-                    default:
-                        color = Color.BLACK;
-                        break;
-                }
-                
-                // Dibujar línea
-                googleMap.addPolyline(new PolylineOptions()
-                        .add(startLatLng, endLatLng)
-                        .color(color)
-                        .width(10));
-                
-                // Agregar a los bounds
-                boundsBuilder.include(startLatLng);
-                boundsBuilder.include(endLatLng);
-                
-                // Si es el primer segmento, agregar marcador de origen
-                if (segment.equals(segments.get(0))) {
-                    googleMap.addMarker(new MarkerOptions()
-                            .position(startLatLng)
-                            .title(start.getName())
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                }
-                
-                // Si es el último segmento, agregar marcador de destino
-                if (segment.equals(segments.get(segments.size() - 1))) {
-                    googleMap.addMarker(new MarkerOptions()
-                            .position(endLatLng)
-                            .title(end.getName())
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                }
-                
-                // Si es parada de bus, agregar marcador
-                if (segment.getBusStop() != null) {
-                    LatLng stopLatLng = new LatLng(segment.getBusStop().getLatitude(), segment.getBusStop().getLongitude());
-                    googleMap.addMarker(new MarkerOptions()
-                            .position(stopLatLng)
-                            .title(segment.getBusStop().getName())
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+            if (start == null || end == null) continue;
+
+            LatLng startLatLng = new LatLng(start.getLatitude(), start.getLongitude());
+            LatLng endLatLng = new LatLng(end.getLatitude(), end.getLongitude());
+
+            int color;
+            if (segment.getType() == RouteSegment.SegmentType.WALKING) {
+                color = Color.GRAY;
+            } else if (segment.getType() == RouteSegment.SegmentType.BUS && segment.getBusLine() != null && segment.getBusLine().getColor() != null) {
+                try { color = Color.parseColor(segment.getBusLine().getColor()); }
+                catch (Exception e) { color = Color.BLACK; }
+            } else {
+                color = Color.BLACK;
+            }
+
+            // Dibujar polilínea real si está disponible
+            boolean drewPolyline = false;
+            if (segment.getPolylineEncoded() != null && !segment.getPolylineEncoded().isEmpty()) {
+                List<LatLng> points = decodePolyline(segment.getPolylineEncoded());
+                if (points != null && points.size() > 1) {
+                    googleMap.addPolyline(new PolylineOptions().addAll(points).color(color).width(10));
+                    for (LatLng p : points) boundsBuilder.include(p);
+                    drewPolyline = true;
                 }
             }
+            if (!drewPolyline) {
+                googleMap.addPolyline(new PolylineOptions().add(startLatLng, endLatLng).color(color).width(10));
+                boundsBuilder.include(startLatLng);
+                boundsBuilder.include(endLatLng);
+            }
+
+            // Marcadores de origen/destino
+            if (segment.equals(segments.get(0))) {
+                googleMap.addMarker(new MarkerOptions()
+                        .position(startLatLng)
+                        .title(start.getName())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            }
+            if (segment.equals(segments.get(segments.size() - 1))) {
+                googleMap.addMarker(new MarkerOptions()
+                        .position(endLatLng)
+                        .title(end.getName())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            }
+
+            // Marcador de parada de bus si existe
+            if (segment.getType() == RouteSegment.SegmentType.BUS && segment.getBusStop() != null) {
+                LatLng stopLatLng = new LatLng(segment.getBusStop().getLatitude(), segment.getBusStop().getLongitude());
+                googleMap.addMarker(new MarkerOptions()
+                        .position(stopLatLng)
+                        .title(segment.getBusStop().getName())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+            }
         }
-        
-        // Ajustar cámara para ver toda la ruta
+
         try {
             LatLngBounds bounds = boundsBuilder.build();
             googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
-        } catch (IllegalStateException e) {
-            // Error al construir los bounds, probablemente faltan puntos
+        } catch (IllegalStateException ignored) {}
+    }
+
+    private List<LatLng> decodePolyline(String encoded) {
+        List<LatLng> poly = new java.util.ArrayList<>();
+        int index = 0, len = encoded.length();
+        int lat = 0, lng = 0;
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            double latD = lat / 1E5;
+            double lngD = lng / 1E5;
+            poly.add(new LatLng(latD, lngD));
         }
+        return poly;
     }
     
     /**
@@ -322,6 +357,27 @@ public class NavigationMapFragment extends Fragment implements OnMapReadyCallbac
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL));
         }
+    }
+
+    /**
+     * Activa un modo de cámara similar a navegación: centra en usuario, aplica bearing y tilt.
+     */
+    private void enableNavigationCamera() {
+        if (googleMap == null) return;
+        try {
+            fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+                if (location == null) return;
+                LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
+                float bearing = location.hasBearing() ? location.getBearing() : googleMap.getCameraPosition().bearing;
+                com.google.android.gms.maps.model.CameraPosition cam = new com.google.android.gms.maps.model.CameraPosition.Builder()
+                        .target(pos)
+                        .zoom(Math.max(googleMap.getCameraPosition().zoom, ZOOM_LEVEL))
+                        .bearing(bearing)
+                        .tilt(45f)
+                        .build();
+                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cam));
+            });
+        } catch (SecurityException ignored) { }
     }
     
     /**

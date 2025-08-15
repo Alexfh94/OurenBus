@@ -27,8 +27,14 @@ public class SplashActivity extends AppCompatActivity {
         
         // Programar la transición a la actividad principal
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            // Iniciar la actividad principal
-            Intent intent = new Intent(this, MainActivity.class);
+            // Redirigir a Login si no hay usuario guardado
+            com.example.ourenbus2.repository.UserRepository repo = new com.example.ourenbus2.repository.UserRepository(getApplication());
+            final Intent intent;
+            if (repo.getLastEmail() == null || repo.getLastEmail().isEmpty() || !repo.hasUserSaved()) {
+                intent = new Intent(this, com.example.ourenbus2.auth.LoginActivity.class);
+            } else {
+                intent = new Intent(this, MainActivity.class);
+            }
             startActivity(intent);
             
             // Finalizar esta actividad para que no se pueda volver atrás

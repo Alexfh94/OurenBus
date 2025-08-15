@@ -35,6 +35,10 @@
         <Preference
             android:key="clear_data"
             android:title="Borrar datos de la aplicación" />
+
+        <Preference
+            android:key="clear_favorites"
+            android:title="@string/clear_favorites" />
     </PreferenceCategory>
 
 </PreferenceScreen> 

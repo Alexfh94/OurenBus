@@ -19,6 +19,7 @@ public class FavoriteRouteEntity {
     private Location destination;
     private String routeData;  // Datos de la ruta en formato JSON
     private long timestamp;    // Fecha de guardado
+    private String userEmail;  // Email del usuario propietario
 
     /**
      * Constructor por defecto.
@@ -36,12 +37,13 @@ public class FavoriteRouteEntity {
      * @param timestamp   Fecha de guardado
      */
     @Ignore
-    public FavoriteRouteEntity(String name, Location origin, Location destination, String routeData, long timestamp) {
+    public FavoriteRouteEntity(String name, Location origin, Location destination, String routeData, long timestamp, String userEmail) {
         this.name = name;
         this.origin = origin;
         this.destination = destination;
         this.routeData = routeData;
         this.timestamp = timestamp;
+        this.userEmail = userEmail;
     }
 
     /**
@@ -151,4 +153,8 @@ public class FavoriteRouteEntity {
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
+
+    public String getUserEmail() { return userEmail; }
+
+    public void setUserEmail(String userEmail) { this.userEmail = userEmail; }
 } 

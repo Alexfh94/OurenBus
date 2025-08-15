@@ -29,6 +29,18 @@
         app:tint="@color/primary" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_navigation_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_large"
+        android:src="@drawable/ic_directions"
+        app:backgroundTint="@color/white"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@+id/fab_my_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/primary" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_zoom_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

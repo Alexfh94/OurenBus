@@ -22,6 +22,7 @@ public class UserRepository {
 
     private static final String PREF_NAME = "user_preferences";
     private static final String KEY_USER = "current_user";
+    private static final String KEY_LAST_EMAIL = "last_email";
     
     private final SharedPreferences preferences;
     private final Gson gson;
@@ -65,6 +66,7 @@ public class UserRepository {
             String userJson = gson.toJson(user);
             preferences.edit()
                     .putString(KEY_USER, userJson)
+                    .putString(KEY_LAST_EMAIL, user.getEmail())
                     .apply();
         }
     }
@@ -75,7 +77,16 @@ public class UserRepository {
     public void deleteUser() {
         preferences.edit()
                 .remove(KEY_USER)
+                .remove(KEY_LAST_EMAIL)
                 .apply();
+    }
+
+    public String getLastEmail() {
+        return preferences.getString(KEY_LAST_EMAIL, "");
+    }
+
+    public boolean hasUserSaved() {
+        return preferences.contains(KEY_USER);
     }
     
     /**
@@ -104,6 +115,18 @@ public class UserRepository {
         String id = UUID.randomUUID().toString();
         UserEntity userEntity = new UserEntity(id, user.getName(), user.getEmail(), user.getProfileImagePath());
         new InsertUserAsyncTask(userDao).execute(userEntity);
+    }
+
+    /**
+     * Comprueba si existe un usuario con el email dado (sincrónico en hilo de fondo).
+     */
+    public boolean existsByEmail(String email) {
+        try {
+            UserEntity e = userDao.getUserByEmailSync(email);
+            return e != null;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     /**
