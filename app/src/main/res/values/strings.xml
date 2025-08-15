@@ -77,4 +77,23 @@
     <string name="error_select_origin">Por favor, selecciona un origen válido</string>
     <string name="error_select_destination">Por favor, selecciona un destino válido</string>
     <string name="error_location_not_available">No se pudo obtener tu ubicación actual</string>
+    
+    <!-- Navegación - Pasos -->
+    <string name="no_steps_available">No hay pasos disponibles</string>
+    <string name="time_remaining">Tiempo restante: %1$d min</string>
+
+    <!-- Direcciones/indicaciones (usadas para construir instrucciones) -->
+    <string name="bus_default_name">Autobús</string>
+    <string name="line_prefix">Línea %1$s</string>
+    <string name="take_line_instruction">Toma la %1$s (%2$d paradas)</string>
+    <string name="bus_ride">Trayecto en autobús</string>
+    <string name="walk_distance_m">Camina %1$d m</string>
+    <string name="start_point">Inicio</string>
+    <string name="end_point">Fin</string>
+    <string name="bus_stop">Parada</string>
+    <string name="distance_meters">%1$d m</string>
+
+    <!-- Errores técnicos -->
+    <string name="missing_maps_api_key">Falta MAPS_API_KEY</string>
+    <string name="error_directions">Error Directions: %1$s</string>
 </resources>

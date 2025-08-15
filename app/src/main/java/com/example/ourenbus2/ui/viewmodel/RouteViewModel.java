@@ -50,7 +50,7 @@ public class RouteViewModel extends AndroidViewModel {
         routeRepository = new RouteRepository(application);
         favoritesRepository = new FavoriteRouteRepository(application);
         userRepository = new UserRepository(application);
-        directionsService = new DirectionsHttpService();
+        directionsService = new DirectionsHttpService(application);
         favoriteRoutes = favoritesRepository.getAllFavoriteRoutes();
     }
 
