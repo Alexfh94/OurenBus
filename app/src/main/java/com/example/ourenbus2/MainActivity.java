@@ -74,8 +74,27 @@ public class MainActivity extends AppCompatActivity {
         // Configurar listeners
         setupListeners();
         
-        // Cargar fragmentos
-        loadFragments();
+        // Cargar fragmentos solo si es primer arranque (no recreación)
+        if (savedInstanceState == null) {
+            loadFragments();
+        }
+        
+        // Ajustar visibilidad según el fragmento actual en el contenedor principal
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.main_container);
+        if (currentFragment != null) {
+            hideMapComponents();
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
+        } else {
+            // Asegurar que los componentes del mapa estén visibles tras recreaciones
+            findViewById(R.id.fragment_route_input_container).setVisibility(View.VISIBLE);
+            findViewById(R.id.fragment_map_container).setVisibility(View.VISIBLE);
+            bottomActions.setVisibility(View.VISIBLE);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            }
+        }
         
         // Observar cambios en el ViewModel
         observeViewModel();
