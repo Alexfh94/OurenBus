@@ -8,14 +8,23 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 import com.example.ourenbus2.database.dao.FavoriteRouteDao;
+import com.example.ourenbus2.database.dao.GtfsDao;
 import com.example.ourenbus2.database.dao.UserDao;
 import com.example.ourenbus2.database.entity.FavoriteRouteEntity;
 import com.example.ourenbus2.database.entity.UserEntity;
+import com.example.ourenbus2.database.entity.gtfs.GtfsRouteEntity;
+import com.example.ourenbus2.database.entity.gtfs.GtfsStopEntity;
+import com.example.ourenbus2.database.entity.gtfs.GtfsStopTimeEntity;
+import com.example.ourenbus2.database.entity.gtfs.GtfsTripEntity;
+import com.example.ourenbus2.database.entity.gtfs.GtfsCalendarEntity;
+import com.example.ourenbus2.database.entity.gtfs.GtfsCalendarDateEntity;
 
 /**
  * Clase principal de la base de datos de la aplicación.
  */
-@Database(entities = {UserEntity.class, FavoriteRouteEntity.class}, version = 2, exportSchema = false)
+@Database(entities = {UserEntity.class, FavoriteRouteEntity.class,
+        GtfsStopEntity.class, GtfsRouteEntity.class, GtfsTripEntity.class, GtfsStopTimeEntity.class,
+        GtfsCalendarEntity.class, GtfsCalendarDateEntity.class}, version = 4, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -35,6 +44,8 @@ public abstract class AppDatabase extends RoomDatabase {
      * @return DAO de usuarios
      */
     public abstract UserDao userDao();
+
+    public abstract GtfsDao gtfsDao();
 
     /**
      * Obtiene una instancia de la base de datos.

@@ -126,6 +126,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         List<LatLng> allPoints = new ArrayList<>();
         LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
         for (RouteSegment segment : route.getSegments()) {
+            // No dibujar líneas para segmentos de espera
+            if (segment.getType() == RouteSegment.SegmentType.WAIT) {
+                continue;
+            }
             int color;
             if (segment.getType() == RouteSegment.SegmentType.WALKING) {
                 color = getResources().getColor(R.color.route_walk, null);
@@ -143,7 +147,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 googleMap.addPolyline(new PolylineOptions().addAll(polyPoints).width(10).color(color));
                 for (LatLng p : polyPoints) boundsBuilder.include(p);
                 allPoints.addAll(polyPoints);
-            } else {
+            } else if (segment.getStartLocation() != null && segment.getEndLocation() != null) {
                 LatLng start = new LatLng(segment.getStartLocation().getLatitude(), segment.getStartLocation().getLongitude());
                 LatLng end = new LatLng(segment.getEndLocation().getLatitude(), segment.getEndLocation().getLongitude());
                 googleMap.addPolyline(new PolylineOptions().add(start, end).width(10).color(color));

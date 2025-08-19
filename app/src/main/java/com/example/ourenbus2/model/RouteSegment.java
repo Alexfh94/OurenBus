@@ -18,6 +18,7 @@ public class RouteSegment {
     public enum SegmentType {
         WALKING,
         BUS,
+        WAIT,
         BIKE,
         OTHER
     }

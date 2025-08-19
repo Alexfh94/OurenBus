@@ -92,6 +92,7 @@
     <string name="end_point">Fin</string>
     <string name="bus_stop">Parada</string>
     <string name="distance_meters">%1$d m</string>
+    <string name="wait_instruction">Esperar %1$d min en %2$s hasta %3$s</string>
 
     <!-- Errores técnicos -->
     <string name="missing_maps_api_key">Falta MAPS_API_KEY</string>

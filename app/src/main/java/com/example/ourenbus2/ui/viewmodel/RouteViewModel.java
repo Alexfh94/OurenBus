@@ -17,6 +17,8 @@ import com.example.ourenbus2.repository.FavoriteRouteRepository;
 import com.example.ourenbus2.service.DirectionsHttpService;
 import com.example.ourenbus2.util.RouteGenerator;
 import com.example.ourenbus2.repository.UserRepository;
+import com.example.ourenbus2.util.gtfs.GtfsImporter;
+import com.example.ourenbus2.util.gtfs.GtfsRouter;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -88,13 +90,33 @@ public class RouteViewModel extends AndroidViewModel {
             }
             Route route = null;
             try {
-                // Preferir siempre transporte público; minimizar caminatas con transit_routing_preference=less_walking
-                Route transit = directionsService.getBestTransitRoute(apiKey, origin, destination);
-                if (transit != null && transit.isValid()) {
-                    route = transit;
-                } else {
-                    // Si no hay transit disponible, caer a caminar
+                // Intentar primero con GTFS local si hay feed importado
+                try { GtfsImporter.importIfEmpty(getApplication()); } catch (Exception ignored) {}
+                if (GtfsRouter.hasData(getApplication())) {
+                    Route gtfs = GtfsRouter.findSimpleRoute(getApplication(), origin, destination);
+                    if (gtfs != null && gtfs.isValid()) {
+                        route = gtfs;
+                    }
+                }
+                if (route == null) {
+                // Probar ventana de salida 0/5/10/15 minutos, priorizando uso de bus
+                long now = System.currentTimeMillis() / 1000L;
+                long[] departures = new long[] { now, now + 5 * 60, now + 10 * 60, now + 15 * 60 };
+                List<Route> candidates = new java.util.ArrayList<>();
+                for (long dep : departures) {
+                    try {
+                        List<Route> batch = directionsService.getTransitRoutesAtCandidates(apiKey, origin, destination, dep);
+                        if (batch != null) {
+                            for (Route r : batch) if (r != null && r.isValid()) candidates.add(r);
+                        }
+                    } catch (Exception ignored) { }
+                }
+                // Si no hay candidatos transit, caer a la mejor a pie
+                if (candidates.isEmpty()) {
                     route = directionsService.getBestWalkingRoute(apiKey, origin, destination);
+                } else {
+                    route = pickBestBusBiased(candidates);
+                }
                 }
             } catch (Exception e) {
                 errorMessage.postValue("Error Directions: " + e.getMessage());
@@ -110,6 +132,56 @@ public class RouteViewModel extends AndroidViewModel {
             }
             isLoading.postValue(false);
         });
+    }
+
+    private Route pickBestBusBiased(List<Route> routes) {
+        Route bestAcceptable = null;
+        double bestAcceptableScore = -1e9;
+        Route bestFallback = null;
+        double bestFallbackScore = -1e9;
+        int bestFallbackMaxWait = Integer.MAX_VALUE;
+        final int MAX_WAIT_MIN = 10;
+        for (Route r : routes) {
+            int minutesBus = 0;
+            int minutesWalk = 0;
+            int minutesWait = 0;
+            int busSegments = 0;
+            int maxWait = 0;
+            if (r.getSegments() != null) {
+                for (com.example.ourenbus2.model.RouteSegment s : r.getSegments()) {
+                    switch (s.getType()) {
+                        case BUS:
+                            minutesBus += s.getDuration();
+                            busSegments++;
+                            break;
+                        case WALKING:
+                            minutesWalk += s.getDuration();
+                            break;
+                        case WAIT:
+                            minutesWait += s.getDuration();
+                            if (s.getDuration() > maxWait) maxWait = s.getDuration();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            int waitOver = Math.max(0, minutesWait - MAX_WAIT_MIN);
+            double score = minutesBus * 2.0 + busSegments * 1.0 - minutesWalk * 1.0 - waitOver * 3.0;
+            score += -0.01 * r.getTotalDuration();
+            score += -0.001 * (minutesWalk);
+            if (maxWait <= MAX_WAIT_MIN) {
+                if (score > bestAcceptableScore) { bestAcceptableScore = score; bestAcceptable = r; }
+            } else {
+                if (maxWait < bestFallbackMaxWait || (maxWait == bestFallbackMaxWait && score > bestFallbackScore)) {
+                    bestFallbackMaxWait = maxWait;
+                    bestFallbackScore = score;
+                    bestFallback = r;
+                }
+            }
+        }
+        if (bestAcceptable != null) return bestAcceptable;
+        return bestFallback != null ? bestFallback : routes.get(0);
     }
 
     private String getApiKey() {

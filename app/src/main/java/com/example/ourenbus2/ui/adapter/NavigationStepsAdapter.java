@@ -111,6 +111,9 @@ public class NavigationStepsAdapter extends ListAdapter<RouteSegment, Navigation
                 case WALKING:
                     ivIcon.setImageResource(R.drawable.ic_walk);
                     break;
+                case WAIT:
+                    ivIcon.setImageResource(R.drawable.ic_directions);
+                    break;
                 default:
                     ivIcon.setImageResource(R.drawable.ic_directions);
                     break;
