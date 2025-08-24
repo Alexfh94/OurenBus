@@ -510,6 +510,7 @@
                         <li class="level-2"><a href="#patron-mvvm">4.1. Patrón MVVM</a></li>
                         <li class="level-2"><a href="#componentes">4.2. Componentes Principales</a></li>
                         <li class="level-2"><a href="#base-datos">4.3. Base de Datos</a></li>
+                        <li class="level-2"><a href="#diagramas-uml">4.4. Diagramas UML del Sistema</a></li>
                     </ul>
                 </li>
                 <li class="level-1"><a href="#tecnologias">5. Tecnologí­as y Herramientas</a>
@@ -1198,6 +1199,285 @@ public abstract class AppDatabase extends RoomDatabase {
                     <li><strong>Integración con LiveData:</strong> Observación reactiva de cambios en la base de datos</li>
                     <li><strong>Migrations automáticas:</strong> Manejo simplificado de cambios en el esquema</li>
                     <li><strong>Anotaciones declarativas:</strong> Definición clara de entidades y relaciones</li>
+                </ul>
+            </div>
+            
+            <h2 id="diagramas-uml">4.4. Diagramas UML del Sistema</h2>
+            
+            <p>Para completar la documentación arquitectónica, se presentan los diagramas UML fundamentales que representan la estructura y comportamiento del sistema OurenBus.</p>
+            
+            <h3>Diagrama de Casos de Uso</h3>
+            
+            <p>El diagrama de casos de uso muestra las funcionalidades principales que el sistema ofrece a los usuarios y cómo interactúan con el sistema:</p>
+            
+            <div class="diagram-container">
+                <div class="diagram-title">Diagrama de Casos de Uso - OurenBus</div>
+                <div class="mermaid">
+graph TD
+    subgraph "Usuario"
+        U[Usuario]
+    end
+    
+    subgraph "Funcionalidades"
+        UC1[Buscar Ruta]
+        UC2[Navegar Ruta]
+        UC3[Gestionar Favoritos]
+        UC4[Gestionar Preferencias]
+        UC5[Gestionar Datos]
+    end
+    
+    subgraph "Sistemas Externos"
+        SE1[Google Maps API]
+        SE2[Servicios de Localización]
+        SE3[Base de Datos GTFS]
+        SE4[Base de Datos General]
+    end
+    
+    %% Usuario accede a todas las funcionalidades
+    U --> UC1
+    U --> UC2
+    U --> UC3
+    U --> UC4
+    U --> UC5
+    
+    %% Dependencias principales
+    UC1 --> SE1
+    UC1 --> SE3
+    UC2 --> SE2
+    UC3 --> SE4
+    UC4 --> SE4
+    UC5 --> SE4
+    
+    style U fill:#e1f5fe
+    style UC1 fill:#f3e5f5
+    style UC2 fill:#f3e5f5
+    style UC3 fill:#f3e5f5
+    style UC4 fill:#f3e5f5
+    style UC5 fill:#f3e5f5
+    style SE1 fill:#fff3e0
+    style SE2 fill:#fff3e0
+    style SE3 fill:#fff3e0
+    style SE4 fill:#fff3e0
+                </div>
+            </div>
+            
+            <h3>Diagrama de Clases</h3>
+            
+            <p>El diagrama de clases representa la estructura estática del sistema, mostrando las clases principales, sus atributos, métodos y las relaciones entre ellas:</p>
+            
+            <div class="diagram-container">
+                <div class="diagram-title">Diagrama de Clases - OurenBus</div>
+                <div class="mermaid">
+classDiagram
+    class MainActivity {
+        -RouteViewModel routeViewModel
+        -FavoriteRoutesViewModel favoritesViewModel
+        +onCreate(Bundle)
+        +setupToolbar()
+        +loadFragments()
+        +setupListeners()
+    }
+    
+    class RouteViewModel {
+        -LocationRepository locationRepository
+        -RouteRepository routeRepository
+        -FavoriteRouteRepository favoritesRepository
+        -MutableLiveData~Location~ origin
+        -MutableLiveData~Location~ destination
+        -MutableLiveData~Route~ currentRoute
+        +searchRoute(Location, Location)
+        +searchLocationSuggestions(String)
+        +saveRouteToFavorites(String)
+    }
+    
+    class Route {
+        -long id
+        -String name
+        -int totalDistance
+        -int totalDuration
+        -Date createdDate
+        -boolean isFavorite
+        -Location origin
+        -Location destination
+        -List~RouteSegment~ segments
+        +calculateTotalDistance()
+        +calculateTotalDuration()
+        +isValid() boolean
+    }
+    
+    class RouteSegment {
+        -SegmentType type
+        -Location startLocation
+        -Location endLocation
+        -int duration
+        -int distance
+        -String instructions
+        -Date startTime
+        -Date endTime
+        -BusLine busLine
+        -BusStop busStop
+        -String polylineEncoded
+    }
+    
+    class Location {
+        -String id
+        -String name
+        -String description
+        -double latitude
+        -double longitude
+        +getDistanceTo(Location) double
+        +toString() String
+    }
+    
+    class RouteRepository {
+        -RouteDao routeDao
+        -DirectionsHttpService directionsService
+        -GtfsRouter gtfsRouter
+        +getAllRoutes() LiveData~List~Route~~
+        +insert(Route)
+        +calculateRoute(Location, Location) Route
+    }
+    
+    class FavoriteRouteRepository {
+        -FavoriteRouteDao dao
+        -Executor executor
+        -String currentUserEmail
+        +getAllFavoriteRoutes() LiveData~List~Route~~
+        +insert(Route)
+        +delete(Route)
+        +convertToEntity(Route) FavoriteRouteEntity
+    }
+    
+    class UserRepository {
+        -UserDao userDao
+        -Executor executor
+        +existsByEmail(String) boolean
+        +saveUser(User)
+        +getUserByEmail(String) User
+        +updateUser(User)
+    }
+    
+    class DirectionsHttpService {
+        -String BASE_URL
+        -String apiKey
+        +getBestTransitRoute(String, Location, Location) Route
+        -parseDirectionsResponse(String) Route
+        -httpGet(String) String
+    }
+    
+    class GtfsRouter {
+        +findSimpleRoute(Context, Location, Location) Route
+        -findDirectRoute(GtfsDao, GtfsStopEntity, GtfsStopEntity, int, Location, Location) Route
+        -kNearestStops(List, Location, int) List
+        -buildRouteFromGtfs(GtfsDao, String, GtfsStopTimeEntity, GtfsStopTimeEntity, GtfsStopEntity, GtfsStopEntity, Location, Location) Route
+    }
+    
+    class AppDatabase {
+        -static volatile AppDatabase instance
+        -static String DATABASE_NAME
+        +getInstance(Context) AppDatabase
+        +favoriteRouteDao() FavoriteRouteDao
+        +userDao() UserDao
+        +gtfsDao() GtfsDao
+    }
+    
+    class FavoriteRouteEntity {
+        +long id
+        +String userEmail
+        +String routeName
+        +String originName
+        +double originLatitude
+        +double originLongitude
+        +String destinationName
+        +double destinationLatitude
+        +double destinationLongitude
+        +Date createdDate
+    }
+    
+    class UserEntity {
+        +String email
+        +String name
+        +String passwordHash
+        +Date createdDate
+        +Date lastLogin
+    }
+    
+    %% Relaciones
+    MainActivity --> RouteViewModel : uses
+    MainActivity --> FavoriteRoutesViewModel : uses
+    RouteViewModel --> RouteRepository : uses
+    RouteViewModel --> FavoriteRouteRepository : uses
+    RouteViewModel --> LocationRepository : uses
+    Route --> Location : has origin
+    Route --> Location : has destination
+    Route --> RouteSegment : contains
+    RouteSegment --> Location : has start
+    RouteSegment --> Location : has end
+    RouteRepository --> AppDatabase : uses
+    RouteRepository --> DirectionsHttpService : uses
+    RouteRepository --> GtfsRouter : uses
+    FavoriteRouteRepository --> AppDatabase : uses
+    UserRepository --> AppDatabase : uses
+    AppDatabase --> FavoriteRouteEntity : contains
+    AppDatabase --> UserEntity : contains
+                </div>
+            </div>
+            
+            <h3>Diagrama de Secuencia de Búsqueda de Ruta</h3>
+            
+            <p>Este diagrama detalla el flujo de interacción entre los componentes del sistema durante el proceso de búsqueda de una ruta:</p>
+            
+            <div class="diagram-container">
+                <div class="diagram-title">Secuencia de Búsqueda de Ruta</div>
+                <div class="mermaid">
+sequenceDiagram
+    participant U as Usuario
+    participant UI as MainActivity
+    participant VM as RouteViewModel
+    participant RR as RouteRepository
+    participant GTFS as GtfsRouter
+    participant API as DirectionsHttpService
+    participant DB as AppDatabase
+    participant GM as Google Maps
+    
+    U->>UI: Introduce origen y destino
+    UI->>VM: searchRoute(origin, destination)
+    VM->>RR: calculateRoute(origin, destination)
+    
+    alt Datos GTFS disponibles
+        RR->>GTFS: findSimpleRoute(origin, destination)
+        GTFS->>DB: Consultar paradas cercanas
+        DB-->>GTFS: Lista de paradas
+        GTFS->>DB: Consultar viajes disponibles
+        DB-->>GTFS: Horarios y rutas
+        GTFS-->>RR: Ruta calculada
+    else Sin datos GTFS
+        RR->>API: getBestTransitRoute(origin, destination)
+        API->>GM: Llamada a Google Directions API
+        GM-->>API: Respuesta JSON
+        API-->>RR: Ruta parseada
+    end
+    
+    alt Ruta válida encontrada
+        RR-->>VM: Ruta calculada
+        VM-->>UI: Actualizar LiveData
+        UI->>UI: Mostrar ruta en mapa
+        UI->>U: Visualizar resultado
+    else Error en cálculo
+        RR-->>VM: null o ruta inválida
+        VM-->>UI: Mostrar mensaje de error
+        UI->>U: Informar del problema
+    end
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <h4>Análisis de los Diagramas UML</h4>
+                <ul>
+                    <li><strong>Casos de Uso:</strong> Muestran claramente la separación entre usuarios registrados y no registrados, así como las funcionalidades específicas de cada tipo</li>
+                    <li><strong>Diagrama de Clases:</strong> Revela la arquitectura MVVM con separación clara entre capas de presentación, lógica de negocio y datos</li>
+                    <li><strong>Diagrama de Secuencia:</strong> Ilustra el flujo de datos y la lógica de fallback entre diferentes fuentes de información de rutas</li>
+                    <li><strong>Relaciones:</strong> Las dependencias entre componentes están bien definidas, facilitando el mantenimiento y la escalabilidad</li>
                 </ul>
             </div>
         </section>
